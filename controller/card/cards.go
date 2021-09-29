@@ -13,12 +13,23 @@ var cardRequestServer = env.GoDotEnvVariable("CARD_REQUEST_URI")
 
 func GetCard(c *gin.Context) {
 	var userName string = c.Param(("userName"))
-	resp, err := netClient.Get(cardRequestServer + userName)
+
+	tonetCardReq, err := http.NewRequest("GET", cardRequestServer + userName, nil)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": "false", "message": err.Error()})
+		return
+	}
+
+	getUserAgent(c,tonetCardReq)
+
+	// tonetCardReq.Header.Add("user-agent-orig","masoood")
+	resp, err := netClient.Do(tonetCardReq)
 	defer netClient.CloseIdleConnections()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": "false", "message": err.Error()})
 		return
 	}
+
 	//Read the response body on the line below.
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -27,4 +38,10 @@ func GetCard(c *gin.Context) {
 	}
 	jsonData := []byte(string(body))
 	c.Data(http.StatusOK, "application/json", jsonData)
+}
+
+func getUserAgent(c *gin.Context, req *http.Request) {
+	uaStringFromReq := c.Request.Header.Get("User-Agent")
+	req.Header.Add("user-agent",string(uaStringFromReq))
+	c.Next()
 }
