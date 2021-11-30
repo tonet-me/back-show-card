@@ -14,13 +14,13 @@ var cardRequestServer = env.GoDotEnvVariable("CARD_REQUEST_URI")
 func GetCardByUsername(c *gin.Context) {
 	var userName string = c.Param(("cardName"))
 
-	tonetCardReq, err := http.NewRequest("GET", cardRequestServer+"un/" + userName, nil)
+	tonetCardReq, err := http.NewRequest("GET", cardRequestServer+"un/"+userName, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": "false", "message": err.Error()})
 		return
 	}
 
-	getUserAgent(c,tonetCardReq)
+	getUserAgent(c, tonetCardReq)
 
 	// tonetCardReq.Header.Add("user-agent-orig","masoood")
 	resp, err := netClient.Do(tonetCardReq)
@@ -40,17 +40,16 @@ func GetCardByUsername(c *gin.Context) {
 	c.Data(http.StatusOK, "application/json", jsonData)
 }
 
-
 func GetCardByQrcode(c *gin.Context) {
-	var userName string = c.Param(("qrCode"))
+	var cardId string = c.Param(("cardId"))
 
-	tonetCardReq, err := http.NewRequest("GET", cardRequestServer+"qr/" + userName, nil)
+	tonetCardReq, err := http.NewRequest("GET", cardRequestServer+"qr/"+cardId, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": "false", "message": err.Error()})
 		return
 	}
 
-	getUserAgent(c,tonetCardReq)
+	getUserAgent(c, tonetCardReq)
 
 	// tonetCardReq.Header.Add("user-agent-orig","masoood")
 	resp, err := netClient.Do(tonetCardReq)
@@ -72,6 +71,6 @@ func GetCardByQrcode(c *gin.Context) {
 
 func getUserAgent(c *gin.Context, req *http.Request) {
 	uaStringFromReq := c.Request.Header.Get("User-Agent")
-	req.Header.Add("user-agent",string(uaStringFromReq))
+	req.Header.Add("user-agent", string(uaStringFromReq))
 	c.Next()
 }

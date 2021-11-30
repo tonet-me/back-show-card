@@ -11,9 +11,9 @@ import (
 
 func StartGin() {
 	router := gin.Default()
-	 router.Use(cors.Default())
+	router.Use(cors.Default())
 	router.Use(gin.Recovery())
-	router.GET("qr/:qrCode", card.GetCardByQrcode)
+	router.GET("qr/:cardId", card.GetCardByQrcode)
 	router.GET("/:cardName", card.GetCardByUsername)
 	router.NoRoute(func(c *gin.Context) {
 		c.AbortWithStatus((http.StatusNotFound))
@@ -21,4 +21,3 @@ func StartGin() {
 	port := env.GoDotEnvVariable("PORT")
 	router.Run(port)
 }
-
