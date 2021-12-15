@@ -14,7 +14,7 @@ func StartGin() {
 	router.Use(cors.Default())
 	router.Use(gin.Recovery())
 	router.GET("qr/:cardId", card.GetCardByQrcode)
-	router.GET("/:cardName", card.GetCardByUsername)
+	router.GET("un/:cardName", card.GetCardByUsername)
 	router.NoRoute(func(c *gin.Context) {
 		c.AbortWithStatus((http.StatusNotFound))
 	})
